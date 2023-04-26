@@ -17,7 +17,9 @@ pipeline {
             }
         }
     }
-    triggers {
-        pollSCM('5 hours')
+    post {
+      success {
+        echo 'Build successful'
+        }
     }
 }
