@@ -3,10 +3,13 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                checkout([$class: 'GitSCM', branches: [[name: '*/main']], userRemoteConfigs: [[url: 'https://github.com/DrobiDS/DevOps-project']]])
+                checkout([$class: 'GitSCM', branches: [[name: '*/main']], userRemoteConfigs: [[url: 'https://github.com/DrobiDS/DevOps-project.git']]])
             }
         }
-        stage('Build and Push Docker Image') {
+        stage('Build and Deploy') {
+            environment {
+                COMPOSE_HTTP_TIMEOUT = '200'
+            }
             steps {
                 sh 'docker-compose down'
                 sh 'docker-compose build'
@@ -14,9 +17,7 @@ pipeline {
             }
         }
     }
-    post {
-        success {
-            echo 'Build successful!'
-        }
+    triggers {
+        pollSCM('5 hours')
     }
 }
